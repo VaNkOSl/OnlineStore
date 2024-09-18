@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SellerForReviewViewModel>
+
+@{
+    ViewBag.Title = "Sellers for Review";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        <p>No unapproved sellers available.</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Full Name</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Egn</th>
+                    <th>Date of Birth</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var seller in Model)
+                {
+                    <tr>
+                        <td>@seller.FullName</td>
+                        <td>@seller.PhoneNumber</td>
+                        <td><a href="mailto:@seller.Email">@seller.Email</a></td>
+                        <td>@seller.Egn</td>
+                        <td>@seller.DateOfBirth.ToShortDateString()</td>
+                        <td>@seller.Description</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <form asp-action="ApproveSeller" method="post" class="d-inline">
+                                    <input type="hidden" name="sellerId" value="@seller.Id" />
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                                <form asp-action="RejectSeller" method="get" class="d-inline">
+                                    <input type="hidden" name="sellerId" value="@seller.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

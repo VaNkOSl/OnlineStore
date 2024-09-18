@@ -1,0 +1,21 @@
+﻿@model ApplyDiscountViewModel
+
+@{
+    ViewData["Title"] = "Apply Discount";
+}
+
+<h2>Apply Discount to @Model.Name</h2>
+
+<form asp-action="ApplyDiscount" method="post">
+    <div class="form-group">
+        <label asp-for="DiscountPercentage" class="control-label"></label>
+        <input asp-for="DiscountPercentage" class="form-control" />
+        <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-primary">Apply Discount</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

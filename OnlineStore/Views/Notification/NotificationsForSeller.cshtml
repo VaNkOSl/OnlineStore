@@ -1,0 +1,64 @@
+﻿@model IEnumerable<NotificationSellerViewModel>
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Message</th>
+                <th>Date Sent</th>
+                <th>Response</th>
+                <th>Sent On</th>
+                <th>Responded On</th>
+                <th>User Name</th>
+                <th>User Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var notification in Model)
+            {
+                <tr>
+                    <td>@notification.Message</td>
+                    <td>@notification.DateSenden?.ToString("g")</td>
+                    <td>@notification.Response</td>
+                    <td>@notification.DateSenden?.ToString("g")</td>
+                    <td>
+                        @if (notification.DateResponded == null)
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Responded</span>
+                        }
+                    </td>
+                    <td>@notification.UserFullName</td>
+                    <td>@notification.UserEmail</td>
+                    <td>    
+                        <a asp-action="Respond" asp-route-id="@notification.Id" class="btn btn-primary">Response</a>
+                        
+                        <form asp-action="MarkAsRead" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@notification.Id" />
+                            <button type="submit" class="btn btn-secondary">Mark as Read</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">
+        You have not any messgess yet!
+    </div>
+}
+
+<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>

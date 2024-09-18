@@ -1,0 +1,201 @@
+﻿@using OnlineStore.Services.Data.Contacts;
+@using OnlineStore.Web.Infrastructure.Extensions;
+@model IEnumerable<ProductIndexServiceModel>
+@inject ISellerService sellerService
+@inject IProductService productService
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+
+@{
+    ViewData["Title"] = "Home Page";
+
+    var products = Model.ToList();
+    bool isUserSeller = await sellerService.ExistsByIdAsync(User.GetId());
+    var brands = await productService.AllBrandsAsync();
+     var brandList = Model.ToList();
+}
+
+<h1 class="display-4 text-center mt-5">Welcome to our website for selling Clothes</h1>
+
+<div class="text-center my-4">
+    <p class="lead">Discover the best clothing from top brands.</p>
+</div>
+
+@if (!products.Any())
+{
+    <div class="mt-4 p-5 bg-light text-center">
+        <p class="lead">
+            There are no products in the system currently available. Why don't you add one?
+        </p>
+        <hr class="my-4">
+        <p class="lead">
+            @if (User.Identity.IsAuthenticated && isUserSeller)
+            {
+                <a asp-controller="Product" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Product</a>
+            }
+        </p>
+    </div>
+}
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Featured Products</h2>
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-inner">
+            @{
+                int chunkSize = 6;
+                var productChunks = products.Select((product, index) => new { product, index })
+                .GroupBy(x => x.index / chunkSize)
+                .Select(g => g.Select(x => x.product).ToList())
+                .ToList();
+            }
+            @for (int i = 0; i < productChunks.Count; i++)
+            {
+                var chunk = productChunks[i];
+                <div class="carousel-item @(i == 0 ? "active" : string.Empty)">
+                    <div class="row">
+                        @foreach (var product in chunk)
+                        {
+                            <div class="col-2">
+                                <img class="d-block w-100" style="height:150px" src="@product.ProductImage" alt="@product.Name" />
+                                <p class="text-center">@product.Name</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Brands We Work With</h2>
+    <div class="row">
+        @foreach (var brand in brands)
+        {
+            if (brand.Name != "NoBrand")
+            {
+                <div class="col-4 text-center mb-4">
+                    <img src="@brand.ImageUrl" class="img-fluid mb-2" alt="@brand.Name" style="height:100px; width:auto;" />
+                    <h5>@brand.Name</h5>
+                </div>
+            }
+        }
+    </div>
+</div>
+     
+
+
+<div class="container my-5">
+    <h2 class="text-center mb-4">Why Shop With Us?</h2>
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <i class="fas fa-shipping-fast fa-3x mb-3"></i>
+            <h5>Fast Shipping</h5>
+            <p>Get your orders delivered quickly and reliably.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <i class="fas fa-undo-alt fa-3x mb-3"></i>
+            <h5>Easy Returns</h5>
+            <p>Hassle-free returns within 30 days.</p>
+        </div>
+        <div class="col-md-4 text-center">
+            <i class="fas fa-headset fa-3x mb-3"></i>
+            <h5>24/7 Support</h5>
+            <p>Our support team is here to help you anytime.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .carousel-item {
+        transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+</style>
+
+<script src="/js/index.js"></script>
+
+@* @using OnlineStore.Services.Data.Contacts;
+@using OnlineStore.Web.Infrastructure.Extensions;
+@model IEnumerable<ProductIndexServiceModel>
+@inject ISellerService sellerServise
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+
+@{
+    ViewData["Title"] = "Home Page";
+
+    var products = Model.ToList();
+    bool isUserSeller = await sellerServise.ExistsByIdAsync(User.GetId());
+}
+
+<h1 class="display-4">Welcome to our website for selling Clothes</h1>
+
+@if(!products.Any())
+{
+    <div class="mt-4 p-5 bg-light">
+        <p class="lead">
+            There are no products in the system currently available
+            so why don't you just add one?
+        </p>
+        <hr class="my-4">
+        <p class="lead">
+            @if (User.Identity.IsAuthenticated && isUserSeller == true)
+            {
+                <a asp-controller="Product" asp-action="Add" class="btn btn-primary btn-lg"
+                   role="button">Add Product</a>
+            }
+        </p>
+    </div>
+}
+
+<style>
+    .carousel-item {
+        transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+</style>
+
+<div class="mb-5"></div>
+
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+    <div class="carousel-inner">
+        @{
+            int chunkSize = 6;
+            var productChunks = products.Select((product, index) => new { product, index })
+            .GroupBy(x => x.index / chunkSize)
+            .Select(g => g.Select(x => x.product).ToList())
+            .ToList();
+        }
+        @for (int i = 0; i < productChunks.Count; i++)
+        {
+            var chunk = productChunks[i];
+            <div class="carousel-item @(i == 0 ? "active" : string.Empty)">
+                <div class="row">
+                    @foreach (var product in chunk)
+                    {
+                        <div class="col-2">
+                            <img class="d-block w-100" style="height:150px" src="@product.Image" alt="@product.Name" />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<script src="/js/index.js"></script> *@

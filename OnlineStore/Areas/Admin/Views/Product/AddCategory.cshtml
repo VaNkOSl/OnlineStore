@@ -1,0 +1,21 @@
+﻿@model CategoryFormModel
+
+@{
+    ViewBag.Title = "Add Category";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<form asp-action="AddCategory" method="post" class="form-horizontal">
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Add Category" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

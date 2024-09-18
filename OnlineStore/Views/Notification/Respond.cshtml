@@ -1,0 +1,24 @@
+﻿@model NotificationResponseFormModel
+
+@{
+    ViewData["Title"] = "Respond to Notification";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Respond" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="ResponseMessage" class="control-label"></label>
+        <textarea asp-for="ResponseMessage" class="form-control" rows="4" placeholder="Enter your response here..."></textarea>
+        <span asp-validation-for="ResponseMessage" class="text-danger"></span>
+    </div>
+
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Send Response</button>
+    </div>
+</form>
+
+<a asp-action="NotificationsForSeller" class="btn btn-secondary">Back to Notifications</a>

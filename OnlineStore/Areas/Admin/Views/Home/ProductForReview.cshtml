@@ -1,0 +1,100 @@
+﻿@model IEnumerable<ProductForApproveServiceModel>
+
+@{
+    ViewBag.Title = "Products for Review";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>No unapproved products available.</p>
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock Quantity</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Seller</th>
+                <th>Colors</th>
+                <th>Sizes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(product.FirstImage))
+                        {
+                            <img src="@product.FirstImage" alt="@product.Name" class="img-thumbnail" style="width:100px;height:100px;" />
+                        }
+                        else
+                        {
+                            <span>No image</span>
+                        }
+                    </td>
+                    <td>@product.Name</td>
+                    <td>@product.Price.ToString("C")</td>
+                    <td>@product.StockQuantity</td>
+                    <td>@product.BrandName</td>
+                    <td>@product.CategoryName</td>
+                    <td>
+                        <strong>@product.Seller.FullName</strong><br />
+                        Phone: @product.Seller.PhoneNumber<br />
+                        Email: <a href="mailto:@product.Seller.Email">@product.Seller.Email</a>
+                    </td>
+                    <td>
+                        @if (product.Colors.Any())
+                        {
+                            <ul>
+                                @foreach (var color in product.Colors)
+                                {
+                                    <li>@color</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>No colors available</span>
+                        }
+                    </td>
+                    <td>
+                        @if (product.Sizes.Any())
+                        {
+                            <ul>
+                                @foreach (var size in product.Sizes)
+                                {
+                                    <li>@size</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>No sizes available</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="ApproveProduct" method="post" class="d-inline">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                        <form asp-action="RejectProduct" method="get" class="d-inline">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

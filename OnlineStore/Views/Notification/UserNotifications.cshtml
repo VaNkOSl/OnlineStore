@@ -1,0 +1,105 @@
+﻿@using OnlineStore.Services.Data.Contacts
+@using OnlineStore.Web.Infrastructure.Extensions
+@model IEnumerable<NotificationViewModel>
+@inject ISellerService sellerService;
+@inject IUserService userService;
+
+@{
+    ViewBag.Title = "Your Messages and Responses";
+
+    var userId = User.GetId();
+    var userFullName = await userService.GetUserFullNameAsync(userId);
+    bool sellerExists = await sellerService.ExistsByIdAsync(userId);
+    bool isSellerApproved = await sellerService.IsUserApprovedAsync(userId);
+    var rejectionReason = await sellerService.GetRejectionReasonAsync(userId);
+    var sellerId = await sellerService.GetSellerByIdAsync(userId);
+    bool IsAdminRejected = await sellerService.IsAdminRejectedAsync(userId);
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+@if (!isSellerApproved && IsAdminRejected)
+{
+    <div class="alert alert-warning">
+        <strong>Your seller account is not approved.</strong><br />
+        <strong>Reason:</strong> @rejectionReason
+        <div style="text-align: right; margin-top: 15px;">
+            <form asp-action="DeleteSellerRequest" method="post">
+                <input type="hidden" name="sellerId" value="@sellerId" />
+                <button type="submit" class="btn btn-danger">Delete Application</button>
+            </form>
+        </div>
+    </div>
+}
+else if (await sellerService.ExistsByIdAsync(userId))
+{
+    <div class="alert alert-info">
+        <p>
+            Your application to become a seller is currently under review by the administrator. Please wait for further updates.
+        </p>
+    </div>
+}
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Message</th>
+                <th>Date Sent</th>
+                <th>Response</th>
+                <th>Sent On</th>
+                <th>Responded On</th>
+                <th>User Name</th>
+                <th>User Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var notification in Model)
+            {
+                <tr>
+                    <td>@notification.Message</td>
+                    <td>@notification.DateSenden?.ToString("g")</td>
+                    <td>@notification.Response</td>
+                    <td>@notification.DateSenden?.ToString("g")</td>
+                    <td>
+                        @if (notification.DateResponded == null)
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Responded</span>
+                        }
+                    </td>
+                    <td>@notification.UserName</td>
+                    <td>@notification.UserEmail</td>
+                    <td>
+                        @if (notification.UserName == userFullName)
+                        {
+                            <a asp-action="UserRespond" asp-route-id="@notification.Id" class="btn btn-primary">Response</a>
+                        }
+
+                        @if (notification.Response != null && notification.UserId == userId)
+                        {
+                            <form asp-action="MarkAsReadByUser" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@notification.Id" />
+                                <button type="submit" class="btn btn-secondary">Mark as Read</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">
+        You have not any messages yet!
+    </div>
+}
+
+<a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>
+

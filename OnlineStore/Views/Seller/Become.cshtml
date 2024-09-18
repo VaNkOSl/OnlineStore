@@ -1,0 +1,61 @@
+﻿@model SellerFormModel
+@{
+    ViewBag.Title = "Become Seller";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="container">
+    @if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewData.ModelState["Error"].Errors.First().ErrorMessage
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-8">
+            <form id="sellerForm" method="post">
+                <div class="form-group">
+                    <label asp-for="FirstName" class="font-weight-bold">First Name:</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="font-weight-bold">Last Name:</label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="font-weight-bold">Description:</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Tell us a little about yourself"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="font-weight-bold">Phone Number:</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="0877777777" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateOfBirth" class="font-weight-bold">Date of Birth:</label>
+                    <input asp-for="DateOfBirth" class="form-control" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Egn" class="font-weight-bold">EGN:</label>
+                    <input asp-for="Egn" class="form-control" />
+                    <span asp-validation-for="Egn" class="text-danger small"></span>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,164 @@
+﻿@using OnlineStore.Services.Data;
+@using OnlineStore.Services.Data.Contacts
+@using OnlineStore.Web.Infrastructure.Extensions;
+@inject ISellerService sellerService
+@model ProductDetailsViewModel
+@{
+    ViewBag.Title = "Product Details";
+
+    bool isSellerHasProducts = await  sellerService.SellerHasProductsAsync(User.GetId(), Model.Id);
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<link href="/css/reviews.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="row">
+        <div>
+            @foreach (var imagePath in Model.ImagePaths)
+            {
+                <img src="@imagePath" alt="Product Image" style="max-width: 200px;" />
+            }
+        </div>
+        <div class="card-col-8 border-0">
+            <p style="font-size:25px"><u>@Model.Name</u></p>
+            <p>Price: @Model.Price BGN</p>
+            <p>Category: @Model.CategoryName</p>
+            <p>Brand: @Model.BrandName</p>
+            <p>
+                <strong>Availability:</strong>
+                <span class="@(Model.IsAvaible ? "text-success" : "text-danger")">
+                    @(Model.IsAvaible ? "Available" : "Out of Stock")
+                </span>
+            </p>
+   
+            @if(Model.IsAvaible == true)
+            {
+                <form asp-action="AddToCart" asp-controller="ShoppingCart" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+
+                    <label for="SelectedColor" class="ml-2">Color:</label>
+                    <div class="form-group">
+                        @foreach (var color in Model.Colors)
+                        {
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="SelectedColor" id="color_@color" value="@color" />
+                                <label class="form-check-label" for="color_@color">@color</label>
+                            </div>
+                        }
+                    </div>
+
+                    <label for="SelectedSizes" class="ml-2">Sizes:</label>
+                    <div class="form-group">
+                        @foreach (var size in Model.Sizes)
+                        {
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="SelectedSizes" id="size_@size" value="@size" />
+                                <label class="form-check-label" for="size_@size">@size</label>
+                            </div>
+                        }
+                    </div>
+
+                    <label for="quantity" class="ml-2">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="@Model.StockQuantity" class="form-control ml-2" style="width: 70px;" />
+                    <button type="submit" class="btn btn-primary ml-2">Add to Cart</button>
+                </form>
+            }
+
+            <p>Quantity in stock: @Model.StockQuantity</p>
+            <p>@Model.Description</p>
+            <div class="form-inline">
+                @if (this.User.Identity.IsAuthenticated && isSellerHasProducts == true || User.IsAdmin())
+                {
+                    <a class="btn btn-warning" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                    <a class="ml-2 btn btn-danger" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+                    <a asp-area="" asp-controller="Product" asp-action="ApplyDiscount" asp-route-id="@Model.Id" class="btn btn-info">Apply Discount</a>
+                }
+            </div>
+            <p></p>
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Seller Info</h5>
+                    @if (Model.Seller.FullName != null)
+                    {
+                        <p class="card-text">Full Name: @Model.Seller.FullName</p>
+                    }
+                    <p class="card-text">Email: @Model.Seller.Email</p>
+                    <p class="card-text">Phone Number: @Model.Seller.PhoneNumber</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h3 class="text-center">Reviews</h3>
+    @if (Model.Reviews.Any())
+    {
+        foreach (var review in Model.Reviews)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p>@review.UserFullName</p>
+                    <p>@review.Content</p>
+                    <p>
+                        Rating:
+                        @{
+                            for (int i = 0; i < review.Rating; i++)
+                            {
+                                <span class="star">&#9733;</span>
+                            }
+                        }
+                    </p>
+                    <p>Date: @review.ReviewDate.ToShortDateString()</p>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <h4 class="text-center">No reviews yet!</h4>
+    }
+</div>
+
+<hr />
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="container">
+        <h3 class="text-center">Write a Product Review</h3>
+        <form asp-action="AddReview" asp-controller="Product" method="post">
+            <input type="hidden" name="ProductId" value="@Model.Id" />
+            <div class="form-group">
+                <label for="reviewContent">Your Review:</label>
+                <textarea class="form-control" id="reviewContent" name="Content" rows="3"></textarea>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="rating">Rating</label>
+                <div class="star-rating">
+                    <input type="radio" id="5-stars" name="Rating" value="5" />
+                    <label for="5-stars" class="star">&#9733;</label>
+                    <input type="radio" id="4-stars" name="Rating" value="4" />
+                    <label for="4-stars" class="star">&#9733;</label>
+                    <input type="radio" id="3-stars" name="Rating" value="3" />
+                    <label for="3-stars" class="star">&#9733;</label>
+                    <input type="radio" id="2-stars" name="Rating" value="2" />
+                    <label for="2-stars" class="star">&#9733;</label>
+                    <input type="radio" id="1-star" name="Rating" value="1" />
+                    <label for="1-star" class="star">&#9733;</label>
+                </div>
+                <span class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">You must be logged in to leave a review.</div>
+}
+
+ @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

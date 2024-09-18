@@ -1,0 +1,72 @@
+﻿@model List<ColorPreDeleteViewModel>
+
+@{
+    ViewBag.Title = "Delete Color";
+}
+
+<h4 class="text-danger">
+    Warning: Deleting this color will permanently remove it from all products that currently use this color.
+    Additionally, if any orders have been placed with this color, the color will no longer be visible to users in their orders.
+</h4>
+
+<div class="container mt-4">
+    <h2 class="text-center">@ViewBag.Title</h2>
+
+    @if (ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Color Name</th>
+                        <th scope="col">Associated Products</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var color in Model)
+                    {
+                        <tr>
+                            <td>@color.Name</td>
+                            <td>
+                                @if (color.ProductNames.Any())
+                                {
+                                    <ul>
+                                        @foreach (var productName in color.ProductNames)
+                                        {
+                                            <li>@productName</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>No associated products</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="DeleteColor" method="post" asp-route-id="@color.Id" class="mb-0">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

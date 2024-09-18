@@ -1,0 +1,19 @@
+﻿@model RejectProductFormModel
+
+@{
+    ViewBag.Title = "Reject Product";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<form asp-action="RejectProduct" method="post">
+    <div class="form-group">
+        <label asp-for="RejectionReason" class="control-label"></label>
+        <textarea asp-for="RejectionReason" class="form-control"></textarea>
+        <span asp-validation-for="RejectionReason" class="text-danger"></span>
+    </div>
+    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+    <button type="submit" class="btn btn-danger">Submit Rejection Reason</button>
+</form>
+
+<a href="@Url.Action("ProductsForReview")" class="btn btn-secondary mt-3">Back to Review</a>

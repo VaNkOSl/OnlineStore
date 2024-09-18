@@ -1,0 +1,129 @@
+﻿@using OnlineStore.Data.Models.Enums
+@model IEnumerable<OrderViewModel>
+
+@{
+    ViewBag.Title = "My Orders";
+}
+
+<h2 class="text-center">My Orders</h2>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">You have not placed an order yet.</h2>
+}
+else
+{
+    @foreach (var order in Model)
+    {
+        @if (order.OrderStatus == OrderStatus.ReadyForPickup)
+        {
+            <h4 class="text-center">Your order is @order.OrderStatus and you can get it at @order.DeliveryOption</h4>
+
+            <h4>Order Items</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product Image</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Color</th>
+                        <th>Sizes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in order.OrderItems)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.ImageUrl" alt="Product Image" style="width:150px;height:150px;" />
+                            </td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price.ToString("C")</td>
+                            <td>@string.Join(", ", item.SelectedColors)</td>
+                            <td>@string.Join(", ", item.SelectedSizes)</td>
+                            <td>
+                                <form method="post" asp-controller="Order" asp-action="TakeOrder">
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    <button type="submit" class="btn btn-primary">Take order!</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <p><strong>Total Price:</strong> @order.TotalPrice.ToString("C")</p>
+            <hr />
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="2">Order Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>@order.FirstName @order.LastName</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Address:</strong></td>
+                        <td>@order.Adress</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone Number:</strong></td>
+                        <td>@order.PhoneNumber</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>@order.Email</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Delivery Option:</strong></td>
+                        <td>@order.DeliveryOption</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Order Status:</strong></td>
+                        <td id="orderStatus-@order.Id">@order.OrderStatus</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Order Items</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product Image</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Color</th>
+                        <th>Sizes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in order.OrderItems)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.ImageUrl" alt="Product Image" style="width:150px;height:150px;" />
+                            </td>
+                            <td>@item.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price.ToString("C")</td>
+                            <td>@string.Join(", ", item.SelectedColors)</td>
+                            <td>@string.Join(", ", item.SelectedSizes)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <p><strong>Total Price:</strong> @order.TotalPrice.ToString("C")</p>
+            <hr />
+        }
+    }
+}
+

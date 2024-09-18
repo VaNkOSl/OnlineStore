@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="mt-4 p-5 bg-light text-center">
+    <h2 class="display">Hello Admin!</h2>
+    <a asp-area="" asp-controller="Product" asp-action="All" class="btn btn-primary btn-lg">All Product</a>
+    <a asp-area="" asp-controller="Product" asp-action="Add" class="btn btn-primary btn-lg">Add Product</a>
+    <a asp-area="Admin" asp-controller="Product" asp-action="Mine" class="btn btn-primary btn-lg">My Product</a>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add Attributes
+        </button>
+        <div class="dropdown-menu">
+                <a asp-area="Admin" asp-controller="Product" asp-action="AddColor" class="dropdown-item">Add Color</a>
+                <a asp-area="Admin" asp-controller="Product" asp-action="AddBrand" class="dropdown-item">Add Brand</a>
+                <a asp-area="Admin" asp-controller="Product" asp-action="AddCategory" class="dropdown-item">Add Category</a>
+                <a asp-area="Admin" asp-controller="Product" asp-action="AddSize" class="dropdown-item">Add Size</a>
+        </div>
+    </div>
+    <div class="btn-group">
+            <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Delete Attributes
+            </button>
+        <div class="dropdown-menu">
+                <a asp-area="Admin" asp-controller="Product" asp-action="DeleteColor" class="dropdown-item">Delete Color</a>
+                <a asp-area="Admin" asp-controller="Product" asp-action="DeleteBrand" class="dropdown-item">Delete Brand</a>
+                <a asp-area="Admin" asp-controller="Product" asp-action="DeleteSize" class="dropdown-item">Delete Size</a>
+                <a asp-area="Admin" asp-controller="Product" asp-action="DeleteCategory" class="dropdown-item">Delete Category</a>
+        </div>
+    </div>
+
+    <span> | </span>
+    <a asp-area="Admin" asp-controller="User" asp-action="All" class="btn btn-primary btn-lg">All Users</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

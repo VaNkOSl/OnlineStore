@@ -1,0 +1,41 @@
+﻿@using OnlineStore.Services.Data.Contacts
+@using OnlineStore.Web.Infrastructure.Extensions
+@inject ISellerService sellerService;
+@model ProductServiceModel
+
+<div class="col-md-4">
+    <div class="card mb-3">
+        <img class="card-img-top" src="@Model.FirstImageUrl" alt="Product Image" />
+        <div class="card-body text-center">
+            <h4>@Model.Name</h4>
+            <h5>@Model.Price.ToString("C")</h5>
+
+            @if (!Model.IsAvaible)
+            {
+                <h4 class="text-danger">This product is out of stock!</h4>
+            }
+            <br />
+
+
+            @if (!Model.IsApproved && !string.IsNullOrEmpty(Model.RejectionReason))
+            {
+                <div class="alert alert-danger mt-2">
+                    <strong>Product Rejected</strong><br />
+                    <p><strong>Reason:</strong> @Model.RejectionReason</p>
+                </div>
+            }
+
+            <a asp-area="" asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-success">Details</a>
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                @if (await sellerService.SellerHasProductsAsync(User.GetId(), Model.Id) || User.IsAdmin())
+                {
+                    <a asp-area="" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                    <a asp-area="" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    <a asp-area="" asp-controller="Product" asp-action="ApplyDiscount" asp-route-id="@Model.Id" class="btn btn-info">Apply Discount</a>
+                }
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<BlockUserViewModel>
+
+@{
+    ViewBag.Title = "Blocked Users";
+}
+
+<h2>Blocked Users</h2>
+
+
+<h4 class="text-danger">If you block a user, they will never again be able to enter this site with their email.</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Email</td>
+                <td>@user.UserFullName</td>
+                <td>
+                    <form asp-action="BlockUser" method="post">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button type="submit" class="btn btn-warning">Block User</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

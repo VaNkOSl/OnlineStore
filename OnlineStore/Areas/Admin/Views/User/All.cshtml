@@ -1,0 +1,66 @@
+﻿@using OnlineStore.Web.Infrastructure.Middlewares
+@model IEnumerable<UserViewModel>
+
+@{
+    ViewBag.Title = "All users";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Full Name</th>
+            <th>Phone Number</th>
+            <th>Is Seller</th>
+            <th>Online Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FullName</td>
+                <td>
+                    @if (user.PhoneNumber != string.Empty)
+                    {
+                        <label>@user.PhoneNumber</label>
+                    }
+                    else
+                    {
+                        <label class="text-center">❌</label>
+                    }
+                </td>
+                <td>
+                    @if (user.IsSeller)
+                    {
+                        <span class="text-success">✔</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">❌</span>
+                    }
+                </td>
+                <td>
+                    @if (OnlineUsersMiddleware.CheckIfUserIsOnline(user.Id))
+                    {
+                        <span class="text-success">✔</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">❌</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="BlockUser" method="get">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button type="submit" class="btn btn-warning">Block User</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

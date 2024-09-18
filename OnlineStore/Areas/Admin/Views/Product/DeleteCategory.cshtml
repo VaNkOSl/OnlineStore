@@ -1,0 +1,67 @@
+﻿@model List<CategoryPreDeleteViewModel>
+
+@{
+    ViewBag.Title = "Delete Category";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">@ViewBag.Title</h2>
+
+    @if (ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Associated Products</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var category in Model)
+                    {
+                        <tr>
+                            <td>@category.Name</td>
+                            <td>
+                                @if(category.ProductNames.Any())
+                                {
+                                    <ul>
+                                        @foreach(var productNames in category.ProductNames)
+                                        {
+                                            <li>@productNames</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span>No associated products</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="DeleteCategory" method="post" asp-route-id="@category.Id" class="mb-0">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

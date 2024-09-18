@@ -1,0 +1,78 @@
+﻿@model List<BrandPreDeleteViewModel>
+
+@{
+    ViewBag.Title = "Delete Brand";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">@ViewBag.Title</h2>
+
+    @if (ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            @if (Model.Any())
+            {
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Image</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Products</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var brand in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <img src="@brand.ImageUrl" alt="@brand.Name" class="img-thumbnail" style="width: 100px; height: auto;">
+                                </td>
+                                <td>@brand.Name</td>
+                                <td>
+                                    <ul>
+                                        @if (brand.ProductNames.Any())
+                                        {
+                                            @foreach (var productName in brand.ProductNames)
+                                            {
+                                                <li>@productName</li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <li>No products using this brand.</li>
+                                        }
+                                    </ul>
+                                </td>
+                                <td>
+                                    <form asp-action="DeleteBrand" method="post" asp-route-id="@brand.Id" class="mb-0">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-center">No brands found.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+}

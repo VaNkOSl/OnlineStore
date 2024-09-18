@@ -1,0 +1,34 @@
+﻿@model NotificationFormModel
+
+@{
+    ViewBag.Title = "Send a Message to Seller";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+<form asp-action="CreateMessege" method="post">
+
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+  @*   <div class="form-group">
+        <label asp-for="SellerPhoneNumber" class="control-label"></label>
+        <input asp-for="SellerPhoneNumber" class="form-control" />
+        <span asp-validation-for="SellerPhoneNumber" class="text-danger"></span>
+    </div> *@
+
+    <div class="form-group">
+        <label asp-for="Message" class="control-label">Message</label>
+        <textarea asp-for="Message" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+
+    <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Send Message</button>
+    </div>
+</form>
+
+<a asp-action="Index" class="btn btn-secondary">Back to Home</a>

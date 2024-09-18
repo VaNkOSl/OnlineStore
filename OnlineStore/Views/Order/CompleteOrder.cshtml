@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Plese fill your data!";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+
+<partial name="_OrderFormPartial" model="@Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
